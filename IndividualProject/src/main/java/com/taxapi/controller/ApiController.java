@@ -74,7 +74,7 @@ public final class ApiController {
             item.getCategory(),
             item.getBasePrice()
         );
-        return ResponseEntity.ok(createdItem)
+        return ResponseEntity.ok(createdItem);  //Missing semicolon error
     }
 
 
