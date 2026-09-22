@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public final class TaxApiApplication {
 
     /** Private constructor to prevent instantiation. */
-    private TaxApiApplication() {       //Constructor missspelled,, also cannot have a return type
+    private TaxApiApplication() {       //Constructor missspelled
     }
 
     /**

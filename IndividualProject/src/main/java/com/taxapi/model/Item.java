@@ -50,7 +50,10 @@ public final class Item {
         return name;
     }
 
-
+    /**
+     * Sets the ID.
+     * @param id is the ID to set
+     */
     public void setId(final String id) {
         this.id = id;
     }
@@ -92,6 +95,10 @@ public final class Item {
     }
 
 
+    /**
+     * Gets the base price.
+     * @return the base price
+     */
     public double getBasePrice() {
         return basePrice;
     }
