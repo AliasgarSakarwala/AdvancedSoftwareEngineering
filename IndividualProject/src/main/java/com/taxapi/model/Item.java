@@ -47,7 +47,7 @@ public final class Item {
      * @return the ID
      */
     public String getId() {
-        return name;
+        return id;
     }
 
     /**
@@ -94,7 +94,7 @@ public final class Item {
         this.category = category;
     }
 
-
+s
     /**
      * Gets the base price.
      * @return the base price
