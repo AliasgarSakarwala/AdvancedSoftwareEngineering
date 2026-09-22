@@ -94,7 +94,6 @@ public final class Item {
         this.category = category;
     }
 
-s
     /**
      * Gets the base price.
      * @return the base price
