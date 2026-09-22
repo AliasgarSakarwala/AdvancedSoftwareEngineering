@@ -94,15 +94,16 @@ class TaxApiServiceUnitTests {
 
     @Test
     void createClient_aliceAlreadyThere() throws Exception {
-        // weird logic in service - only works if name already exists
-        Client c = service.createClient("Alice");
-        assertNotNull(c);
-        assertEquals("Alice", c.getName());
+        // duplicate name should be rejected
+        assertNull(service.createClient("Alice"));
     }
 
     @Test
-    void createClient_brandNewName_returnsNull() throws Exception {
-        assertNull(service.createClient("Bob"));
+    void createClient_brandNewName_ok() throws Exception {
+        Client c = service.createClient("Bob");
+        assertNotNull(c);
+        assertEquals("Bob", c.getName());
+        assertNotNull(c.getApiKey());
     }
 
     @Test
@@ -120,7 +121,8 @@ class TaxApiServiceUnitTests {
 
         assertNotNull(response);
         assertEquals(999.99, response.getPrice(), 0.001);
-        assertEquals(1072.489275, response.getTaxAmount(), 0.001);
+        assertEquals(72.499275, response.getTaxAmount(), 0.001);
+        assertEquals(1072.489275, response.getTotal(), 0.001);
     }
 
     @Test

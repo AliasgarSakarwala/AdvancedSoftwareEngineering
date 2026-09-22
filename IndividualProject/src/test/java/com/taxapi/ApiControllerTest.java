@@ -96,14 +96,22 @@ class ApiControllerTest {
             .andExpect(jsonPath("$.name").value("Mug"));
     }
 
-    // createClient only succeeds when name already exists (Alice) - checked the service code
+    // duplicate name should conflict; new name should succeed
     @Test
-    void createClient_alice_ok() throws Exception {
+    void createClient_alice_conflict() throws Exception {
         mockMvc.perform(post("/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\":\"Alice\"}"))
+            .andExpect(status().isConflict());
+    }
+
+    @Test
+    void createClient_newName_ok() throws Exception {
+        mockMvc.perform(post("/v1/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Bob\"}"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Alice"));
+            .andExpect(jsonPath("$.name").value("Bob"));
     }
 
     @Test
