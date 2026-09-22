@@ -1,6 +1,15 @@
 package com.taxapi.controller;
 
-import org.springframework.web.bind.annotation.*;
+
+//Importing specific annoations from instead importing all of using *
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.taxapi.model.Client;
@@ -23,7 +32,10 @@ public final class ApiController {
     /** The tax API service. */
     private final TaxApiService taxApiService;
 
-
+    /**
+     * Constructor for the ApiController class.
+     * @param taxApiService the service used to interact with tax API
+     */
     public ApiController(
         final TaxApiService taxApiService
     ) {
@@ -57,7 +69,13 @@ public final class ApiController {
         return ResponseEntity.ok(createdClient);
     }
 
-
+    /** 
+     * Creates a new item.
+     *@param apiKey the API key
+     * @param item is the item to create
+     * @return the created the item
+     * @throws IOException if API key is invalid
+     */
     @PostMapping("/items")
     public ResponseEntity<Item> createItem(
         @RequestHeader("X-API-Key")
@@ -74,10 +92,15 @@ public final class ApiController {
             item.getCategory(),
             item.getBasePrice()
         );
-        return ResponseEntity.ok(createdItem)
+        return ResponseEntity.ok(createdItem);  //Missing semicolon error
     }
 
-
+    /**
+     * Function to get all items.
+     * @param apiKey is the API key
+     * @return the list of all items
+     * @throws IOException if API key is invalid
+     */
     @GetMapping("/items")
     public ResponseEntity<List<Item>> getItems(
         @RequestHeader("X-API-Key")
@@ -119,6 +142,13 @@ public final class ApiController {
     }
 
 
+    /**
+     * Function to delete an item.
+     * @param apiKey is the API key
+     * @param id is the ID of the item to delete
+     * @return the deleted item
+     * @throws IOException if API key is invalid
+     */
     @DeleteMapping("/items/{id}")
     public ResponseEntity<Void> deleteItem(
         @RequestHeader("X-API-Key")
@@ -168,7 +198,12 @@ public final class ApiController {
         return ResponseEntity.ok(response);
     }
 
-
+    /**
+     * Function to get the supported countries.
+     * @param apiKey is the API key
+     * @return the supported countries
+     * @throws IOException if the API key is invalid or if there is an I/O error
+     */
     @GetMapping("/supported")
     public ResponseEntity<SupportedResponse>
         getSupported(
