@@ -2,7 +2,12 @@ package com.taxapi.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.taxapi.model.*;
+import com.taxapi.model.Client;
+import com.taxapi.model.Item;
+import com.taxapi.model.TaxRate;
+import com.taxapi.model.TaxQuoteRequest;
+import com.taxapi.model.TaxQuoteResponse;
+import com.taxapi.model.SupportedResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -88,7 +93,7 @@ public final class TaxApiService {
             .anyMatch(c ->
                 c.getName().equalsIgnoreCase(name)
             );
-        if (!nameExists) {
+        if (nameExists) {
             return null;
         }
 
@@ -271,7 +276,7 @@ public final class TaxApiService {
         }
 
         double rate = taxRate.getRate();
-        double taxAmount = price + price * rate;
+        double taxAmount = price * rate;
         double total = price + taxAmount;
 
         return new TaxQuoteResponse(

@@ -1,0 +1,38 @@
+1) Misspelled private constructor in TaxApiApplication
+File: IndividualProject/src/main/java/com/taxapi/TaxApiApplication.java
+Issue: The project would not start compiling on 'mvn spring-boot:run' command.
+Error message: "invalid method declaration; return type required"
+Cause: Constructor was named TaxApiApplicaton (missing an i in the name)
+Fix: Renamed constructor to its proper name to match class.
+
+2) Missing statement terminators
+Files: IndividualProject/src/main/java/com/taxapi/TaxApiApplication.java 
+       IndividualProject/src/main/java/com/taxapi/controller/ApiController.java
+Issue: mvn compile would fail
+Cause: SpringApplication.run() and return ResponseEntitiy.ok(CreatedItem) were both missing a ;
+Fix: Added semi-colons at the end of each.
+
+3)Item.getId() returned the wrong value
+File : IndividualProject/src/main/java/com/taxapi/model/Item.java
+Issue: getItemById(). deleteItemById() and tax quotes by itemID failed or returned null even when the item existed
+Cause: the getter method returned name instead of ID 
+Fix: Changed getId to return ID.
+
+IndividualProject/src/main/java/com/taxapi/model/Item.java
+
+4) Random char in between code
+File : IndividualProject/src/main/java/com/taxapi/model/Item.java
+Issue: Compilation failure caused by a random char in the code
+Cause: 's' was put in between 2 methods
+Fix: Delete the 's'
+
+5) CreateClient logic 
+File : IndividualProject/src/main/java/com/taxapi/service/TaxApiService.java
+Issue: Creating a brand new client returns null but creating a client
+with a name that already exists succeeds
+Fix: change if logic to: if(nameExists) -> then return null otherwise create new client
+
+6)Tax amount calculation is incorrect
+File : IndividualProject/src/main/java/com/taxapi/service/TaxApiService.java
+Issue: When calculating the tax amount inside the calculateTax method, the wrong formula is used
+Fix: Change to the right formula which is TaxAmount = price * taxRate
