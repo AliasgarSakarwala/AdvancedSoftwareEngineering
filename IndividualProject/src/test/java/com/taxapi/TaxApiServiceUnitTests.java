@@ -89,7 +89,7 @@ class TaxApiServiceUnitTests {
 
     @Test
     void getItems_shouldHaveOneAtStart() throws Exception {
-        assertEquals(1, service.getItems().size());
+        assertEquals(1, service.getItems(null, null).size());
     }
 
     @Test

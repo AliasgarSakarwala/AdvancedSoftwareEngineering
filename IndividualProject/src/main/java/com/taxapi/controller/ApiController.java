@@ -99,20 +99,24 @@ public final class ApiController {
     /**
      * Function to get all items.
      * @param apiKey is the API key
+     * @param category is the category of the items to get
+     * @param q is the query to search for
      * @return the list of all items
      * @throws IOException if API key is invalid
      */
     @GetMapping("/items")
     public ResponseEntity<List<Item>> getItems(
         @RequestHeader("X-API-Key")
-        final String apiKey
+        final String apiKey,
+        @RequestParam(required = false) final String category,
+        @RequestParam(required = false) final String q
     ) throws IOException {
         if (!taxApiService.validateApiKey(apiKey)) {
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .build();
         }
-        List<Item> items = taxApiService.getItems();
+        List<Item> items = taxApiService.getItems(category, q);
         return ResponseEntity.ok(items);
     }
 
