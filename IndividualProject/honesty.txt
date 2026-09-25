@@ -1,0 +1,6 @@
+Academic honesty- Aliasgar Sakarwala
+
+AI services of ANY KIND (ChatGPT, Cursor, Copilot, Claude, Gemini, etc.) are strictly prohibited on these assignments unless explicitly permitted. You will be prohibited from using AI for Assignments 1 and 2. However, it will be permitted for Assignment 3.
+If you consult other sources (like Stack Overflow) you must document the instance and how they affected your submission in a file called citations.txt. You are allowed to consult other sources as long as it is not AI. If you used none, you may simply write "No outside sources used".
+Under no circumstances are you allowed to use any source (like Stack Overflow or Chegg) to acquire ’cheat code’ as defined by Professor Jae in his policy
+Collaboration between yourself and other students is not allowed for the miniproject assignments; group work will be allowed after the miniproject.
