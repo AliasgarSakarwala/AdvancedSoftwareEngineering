@@ -202,6 +202,35 @@ public final class TaxApiService {
     }
 
     /**
+     * Updates the base price of an item by ID.
+     *
+     * @param id the item ID
+     * @param NewPrice is the new price of the item
+     * @return the updated item or null
+     * @throws IOException if an I/O error occurs
+     */
+    public Item updateItemPrice( final String id, double NewPrice) throws IOException {
+        List<Item> items = readList(
+            "items.json",
+            new TypeReference<>() { }
+        );
+
+        Item item = items.stream()
+            .filter(item ->
+                item.getId().equals(id)
+            )
+            .findFirst()
+            .orElse(null);
+
+        if (item == null) {
+            return null;
+        }
+        item.setBasePrice(NewPrice);
+        writeList("items.json", items);
+        return item;
+    }
+
+    /**
      * Deletes an item by ID.
      *
      * @param id the item ID
@@ -226,6 +255,9 @@ public final class TaxApiService {
 
         return removed;
     }
+
+    
+   
 
     /**
      * Calculates tax for a request.

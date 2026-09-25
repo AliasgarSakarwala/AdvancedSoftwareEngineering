@@ -18,6 +18,7 @@ import com.taxapi.model.SupportedResponse;
 import com.taxapi.model.TaxQuoteRequest;
 import com.taxapi.model.TaxQuoteResponse;
 import com.taxapi.service.TaxApiService;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.io.IOException;
 import java.util.List;
@@ -167,6 +168,34 @@ public final class ApiController {
         }
         return ResponseEntity.noContent().build();
     }
+
+   /**
+   * Updates the base price of an existing item.
+   * @param apiKey is the API key
+   * @param id is the ID of the item to update
+   * @param item is the item to update
+   * @return the updated item
+   * @throws IOException if API key is invalid
+   */
+  @PatchMapping("/items/{id}")
+  public ResponseEntity<Item> updateItemPrice(
+    @RequestHeader("X-API-Key")
+    final String apiKey,
+    @PathVariable final String id,
+    @RequestBody final Item item
+  ) throws IOException {
+    if (!taxApiService.validateApiKey(apiKey)) {
+      return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .build();
+    }
+    Item updatedItem = taxApiService.updateItemPrice(id, item.getBasePrice());
+    if (updatedItem == null) {
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(updatedItem);
+  }
+  
 
     /**
      * Calculates tax for a quote request.
