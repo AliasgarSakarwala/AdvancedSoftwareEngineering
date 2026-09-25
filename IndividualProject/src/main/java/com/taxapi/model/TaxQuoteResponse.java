@@ -59,7 +59,10 @@ public final class TaxQuoteResponse {
         this.price = price;
     }
 
-
+    /**
+     * Gets the tax rate.
+     * @return the tax rate
+     */
     public double getTaxRate() {
         return taxRate;
     }

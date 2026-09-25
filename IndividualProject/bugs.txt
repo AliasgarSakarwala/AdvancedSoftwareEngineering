@@ -1,0 +1,4 @@
+1) Import  Request.Param not added to ApiController.java, causing a compilation error
+2) Illegal character in ApiController.java. This error came from fixing the error above, since a typo was left behind
+3) Missing imports in ApiControllerTest.java, causing compilation error. Fixed by adding the necessary imports
+4) java.util.List import was missing in the TaxApiServiceUnitTests.java file, causing a compilation error
