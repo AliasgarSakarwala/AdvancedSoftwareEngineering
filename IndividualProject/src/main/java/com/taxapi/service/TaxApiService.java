@@ -2,7 +2,12 @@ package com.taxapi.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.taxapi.model.*;
+import com.taxapi.model.Client;
+import com.taxapi.model.Item;
+import com.taxapi.model.TaxRate;
+import com.taxapi.model.TaxQuoteRequest;
+import com.taxapi.model.TaxQuoteResponse;
+import com.taxapi.model.SupportedResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -88,7 +93,7 @@ public final class TaxApiService {
             .anyMatch(c ->
                 c.getName().equalsIgnoreCase(name)
             );
-        if (!nameExists) {
+        if (nameExists) {
             return null;
         }
 
@@ -197,6 +202,35 @@ public final class TaxApiService {
     }
 
     /**
+     * Updates the base price of an item by ID.
+     *
+     * @param id the item ID
+     * @param NewPrice is the new price of the item
+     * @return the updated item or null
+     * @throws IOException if an I/O error occurs
+     */
+    public Item updateItemPrice( final String id, double NewPrice) throws IOException {
+        List<Item> items = readList(
+            "items.json",
+            new TypeReference<>() { }
+        );
+
+        Item item = items.stream()
+            .filter(item ->
+                item.getId().equals(id)
+            )
+            .findFirst()
+            .orElse(null);
+
+        if (item == null) {
+            return null;
+        }
+        item.setBasePrice(NewPrice);
+        writeList("items.json", items);
+        return item;
+    }
+
+    /**
      * Deletes an item by ID.
      *
      * @param id the item ID
@@ -221,6 +255,9 @@ public final class TaxApiService {
 
         return removed;
     }
+
+    
+   
 
     /**
      * Calculates tax for a request.
@@ -271,7 +308,7 @@ public final class TaxApiService {
         }
 
         double rate = taxRate.getRate();
-        double taxAmount = price + price * rate;
+        double taxAmount = price * rate;
         double total = price + taxAmount;
 
         return new TaxQuoteResponse(
