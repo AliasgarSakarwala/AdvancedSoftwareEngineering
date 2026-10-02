@@ -75,6 +75,4 @@ AI tool used: Cursor
 
 ## Demo videos
 
-- API service demo: **[paste Loom link here]**
-- Client app demo: **[paste Loom link here]**
-
+API service and Client demo can both be accessed here at (**Need to be accessed by LionMail**) : https://drive.google.com/drive/folders/1OWasmwjoP3MG_kCAw9RgA6Ev9du4enYF?usp=sharing   
