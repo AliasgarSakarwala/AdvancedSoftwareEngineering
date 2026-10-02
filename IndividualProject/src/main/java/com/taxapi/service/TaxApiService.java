@@ -224,8 +224,8 @@ public final class TaxApiService {
         );
 
         Item item = items.stream()
-            .filter(item ->
-                item.getId().equals(id)
+            .filter(i ->
+                i.getId().equals(id)
             )
             .findFirst()
             .orElse(null);

@@ -16,6 +16,7 @@ import com.taxapi.model.Client;
 import com.taxapi.model.SupportedResponse;
 import com.taxapi.model.TaxQuoteRequest;
 import com.taxapi.model.TaxQuoteResponse;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,4 +130,53 @@ class TaxApiServiceUnitTests {
         assertTrue(res.getStates().contains("CA"));
         assertTrue(res.getCategories().contains("electronics"));
     }
+
+    @Test
+    void updateItemPrice() throws Exception {
+        Item updated = service.updateItemPrice("item-1", 123.45);
+        assertNotNull(updated);
+        assertEquals(123.45, updated.getBasePrice());
+    }
+
+    @Test
+    void updatedItemPriceHasSameID() throws Exception {
+        Item updated = service.updateItemPrice("item-1", 123.45);
+        assertNotNull(updated);
+        assertEquals("item-1", updated.getId());
+    }
+
+    @Test
+    void updatedItemPriceIsNull() throws Exception {
+        Item updated = service.updateItemPrice("invalid-id", 123.45);
+        assertNull(updated);
+    }
+    @Test
+    void getItems_withCategory() throws Exception {
+        List<Item> items = service.getItems("electronics", null);
+        assertNotNull(items);
+        assertEquals(1, items.size());
+        assertEquals("Laptop", items.get(0).getName());
+    }
+    @Test
+    void getItems_withQuery() throws Exception {
+        List<Item> items = service.getItems(null, "laptop");
+        assertNotNull(items);
+        assertEquals(1, items.size());
+        assertEquals("Laptop", items.get(0).getName());
+    }
+    @Test
+    void getItems_withCategoryAndQuery() throws Exception {
+        List<Item> items = service.getItems("electronics", "laptop");
+        assertNotNull(items);
+        assertEquals(1, items.size());
+        assertEquals("Laptop", items.get(0).getName());
+    }
+    @Test
+    void GetItemsWithNulls() throws Exception {
+        List<Item> items = service.getItems(null, null);
+        assertNotNull(items);
+        assertEquals(1, items.size());
+        assertEquals("Laptop", items.get(0).getName());
+    }
+   
 }
