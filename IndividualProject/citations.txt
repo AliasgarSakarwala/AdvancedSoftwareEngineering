@@ -1,0 +1,11 @@
+Spring Boot / MockMvc docs : https://docs.spring.io/spring-boot/docs/current/reference/html/
+JUNit 5 guide : https://junit.org/junit5/docs/current/user-guide/
+Google : For error messages, how to write appropriate tests, certain code syntax.
+Java Stream.filter: https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html
+  - Used for filtering items by category and q in TaxApiService.
+
+String.equalsIgnoreCase: https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#equalsIgnoreCase(java.lang.String)
+  - Used for case-insensitive category matching.
+
+JaCoCo Maven plugin: https://www.jacoco.org/jacoco/trunk/doc/maven.html
+  - Used to run coverage with mvn test jacoco:report.
