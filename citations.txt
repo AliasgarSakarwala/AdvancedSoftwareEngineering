@@ -11,3 +11,6 @@ String.equalsIgnoreCase: https://docs.oracle.com/en/java/javase/17/docs/api/java
 
 JaCoCo Maven plugin: https://www.jacoco.org/jacoco/trunk/doc/maven.html
   - Used to run coverage with mvn test jacoco:report.
+
+GitHub Actions docs: https://docs.github.com/en/actions/quickstart
+  - Used to set up .github/workflows/ci.yml for Maven tests and Checkstyle.
