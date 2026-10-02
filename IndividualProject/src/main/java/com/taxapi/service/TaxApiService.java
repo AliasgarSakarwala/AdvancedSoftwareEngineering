@@ -166,24 +166,32 @@ public final class TaxApiService {
     }
 
     /**
-     * Gets all items.
+     * Gets all items, optionally filtered.
      *
-     * @return all items
+     * @param category optional category filter
+     * @param q optional name search query
+     * @return all matching items
      * @throws IOException if an I/O error occurs
      */
     public List<Item> getItems(
         final String category,
         final String q
-    )  throws IOException{
+    ) throws IOException {
 
         List<Item> items = readList(
             "items.json",
             new TypeReference<>() { }
         );
         return items.stream()
-        .filter(item -> category == null ? true : item.getCategory().equalsIgnoreCase(category))
-        .filter(item -> q == null? true : item.getName().toLowerCase().contains(q.toLowerCase()))
-        .toList();
+            .filter(item -> category == null
+                ? true
+                : item.getCategory()
+                    .equalsIgnoreCase(category))
+            .filter(item -> q == null
+                ? true
+                : item.getName().toLowerCase()
+                    .contains(q.toLowerCase()))
+            .toList();
     }
 
     /**
@@ -213,11 +221,14 @@ public final class TaxApiService {
      * Updates the base price of an item by ID.
      *
      * @param id the item ID
-     * @param NewPrice is the new price of the item
+     * @param newPrice the new price of the item
      * @return the updated item or null
      * @throws IOException if an I/O error occurs
      */
-    public Item updateItemPrice( final String id, double NewPrice) throws IOException {
+    public Item updateItemPrice(
+        final String id,
+        final double newPrice
+    ) throws IOException {
         List<Item> items = readList(
             "items.json",
             new TypeReference<>() { }
@@ -233,7 +244,7 @@ public final class TaxApiService {
         if (item == null) {
             return null;
         }
-        item.setBasePrice(NewPrice);
+        item.setBasePrice(newPrice);
         writeList("items.json", items);
         return item;
     }
