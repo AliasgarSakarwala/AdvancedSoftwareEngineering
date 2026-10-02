@@ -194,4 +194,70 @@ class ApiControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].name").value("Laptop"));
     }
+
+    @Test
+    void postItem_badKey() throws Exception {
+        String body = "{\"name\":\"Mug\",\"category\":\"home\",\"basePrice\":12.5}";
+        mockMvc.perform(post("/v1/items")
+                .header("X-API-Key", BAD_KEY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getOneItem_badKey() throws Exception {
+        mockMvc.perform(get("/v1/items/item-1")
+                .header("X-API-Key", BAD_KEY))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getOneItem_missing() throws Exception {
+        mockMvc.perform(get("/v1/items/nope-id")
+                .header("X-API-Key", VALID_KEY))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteItem_badKey() throws Exception {
+        mockMvc.perform(delete("/v1/items/item-1")
+                .header("X-API-Key", BAD_KEY))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deleteItem_missing() throws Exception {
+        mockMvc.perform(delete("/v1/items/nope-id")
+                .header("X-API-Key", VALID_KEY))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void taxQuote_badKey() throws Exception {
+        String json = "{\"state\":\"CA\",\"itemId\":\"item-1\"}";
+        mockMvc.perform(post("/v1/tax/quote")
+                .header("X-API-Key", BAD_KEY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void taxQuote_badRequest() throws Exception {
+        // item doesnt exist so service returns null -> 400
+        String json = "{\"state\":\"CA\",\"itemId\":\"missing\"}";
+        mockMvc.perform(post("/v1/tax/quote")
+                .header("X-API-Key", VALID_KEY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void supported_badKey() throws Exception {
+        mockMvc.perform(get("/v1/supported")
+                .header("X-API-Key", BAD_KEY))
+            .andExpect(status().isUnauthorized());
+    }
 }

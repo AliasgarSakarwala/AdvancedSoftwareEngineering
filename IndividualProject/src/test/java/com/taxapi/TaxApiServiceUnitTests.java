@@ -180,5 +180,48 @@ class TaxApiServiceUnitTests {
         assertEquals(1, items.size());
         assertEquals("Laptop", items.get(0).getName());
     }
+
+    @Test
+    void validateAPIKey_nullKey() throws Exception {
+        assertFalse(service.validateApiKey(null));
+    }
+
+    @Test
+    void calculateTax_withPriceAndCategory() throws Exception {
+        TaxQuoteRequest request = new TaxQuoteRequest();
+        request.setState("CA");
+        request.setPrice(100.0);
+        request.setCategory("electronics");
+
+        TaxQuoteResponse response = service.calculateTax(request);
+
+        assertNotNull(response);
+        assertEquals(100.0, response.getPrice(), 0.001);
+        assertEquals(7.25, response.getTaxAmount(), 0.001);
+    }
+
+    @Test
+    void calculateTax_badItemId() throws Exception {
+        TaxQuoteRequest request = new TaxQuoteRequest();
+        request.setState("CA");
+        request.setItemId("does-not-exist");
+        assertNull(service.calculateTax(request));
+    }
+
+    @Test
+    void calculateTax_noMatchingRate() throws Exception {
+        TaxQuoteRequest request = new TaxQuoteRequest();
+        request.setState("TX");
+        request.setPrice(50.0);
+        request.setCategory("electronics");
+        assertNull(service.calculateTax(request));
+    }
+
+    @Test
+    void getItems_categoryDoesntMatch() throws Exception {
+        List<Item> items = service.getItems("clothing", null);
+        assertNotNull(items);
+        assertEquals(0, items.size());
+    }
    
 }
