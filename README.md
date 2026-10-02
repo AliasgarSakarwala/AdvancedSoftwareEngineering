@@ -61,15 +61,20 @@ curl -X POST http://localhost:8080/v1/tax/quote \
   -d '{"state":"CA","itemId":"ITEM_ID_HERE"}'
 ```
 
+## Client app
+
+Price tag generator. It lives with the server so you don't need a separate project:
+
+1. Start the API: `mvn spring-boot:run` (from `IndividualProject`)
+2. Open: http://localhost:8080/pricetag/index.html
+   (or http://localhost:8080/ and click the link)
+
+Flow: load items from `GET /v1/items`, pick a state, hit generate, and it calls `POST /v1/tax/quote` to fill in the tag.
+
+AI tool used: Cursor
+
 ## Demo videos
 
 - API service demo: **[paste Loom link here]**
 - Client app demo: **[paste Loom link here]**
 
-## Client app
-
-I built a small [pick one: e-commerce site / state tax comparison tool / inventory tool / price tag generator / restaurant menu viewer] that calls this API.
-
-AI tool used: **[e.g. Cursor / ChatGPT]**
-
-The client demo video link is above. The client code is not required for submission.
