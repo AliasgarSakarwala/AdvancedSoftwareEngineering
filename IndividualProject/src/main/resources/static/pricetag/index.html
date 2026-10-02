@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Price Tag Generator</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 640px;
+      margin: 40px auto;
+      padding: 0 16px;
+      background: #f5f5f5;
+      color: #222;
+    }
+    h1 { font-size: 22px; margin-bottom: 8px; }
+    p.note { color: #555; font-size: 14px; margin-top: 0; }
+    label { display: block; margin-top: 12px; font-size: 14px; }
+    input, select, button {
+      margin-top: 4px;
+      padding: 8px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      width: auto;
+      margin-top: 16px;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    .err { color: #b00020; font-size: 14px; margin-top: 12px; }
+    .tag {
+      margin-top: 28px;
+      background: #fff;
+      border: 2px dashed #333;
+      padding: 20px;
+      text-align: center;
+      display: none;
+    }
+    .tag.show { display: block; }
+    .tag .name { font-size: 20px; font-weight: bold; }
+    .tag .price { font-size: 32px; margin: 12px 0; }
+    .tag .bits { font-size: 13px; color: #444; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <h1>Price Tag Generator</h1>
+  <p class="note">
+    Pulls items from the Tax API, then builds a tag with tax for a chosen state.
+  </p>
+
+  <button type="button" id="loadBtn">Load items</button>
+
+  <label>Item
+    <select id="itemSelect" disabled>
+      <option value="">Load items first</option>
+    </select>
+  </label>
+
+  <label>State
+    <select id="stateSelect">
+      <option value="CA">CA</option>
+      <option value="NY">NY</option>
+      <option value="AL">AL</option>
+      <option value="FL">FL</option>
+      <option value="TX">TX</option>
+      <option value="HI">HI</option>
+    </select>
+  </label>
+
+  <button type="button" id="genBtn" disabled>Generate price tag</button>
+
+  <div id="err" class="err"></div>
+
+  <div id="tag" class="tag">
+    <div class="name" id="tagName"></div>
+    <div class="price" id="tagTotal"></div>
+    <div class="bits" id="tagBits"></div>
+  </div>
+
+  <script>
+    const API = "/v1";
+    const API_KEY = "540ba996-2ae9-4f72-8b4f-014b463bc4d7";
+    let items = [];
+
+    function showErr(msg) {
+      document.getElementById("err").textContent = msg || "";
+    }
+
+    function money(n) {
+      return "$" + Number(n).toFixed(2);
+    }
+
+    document.getElementById("loadBtn").onclick = async function () {
+      showErr("");
+      try {
+        const res = await fetch(API + "/items", {
+          headers: { "X-API-Key": API_KEY }
+        });
+        if (!res.ok) throw new Error("GET /items failed (" + res.status + ")");
+        items = await res.json();
+        const sel = document.getElementById("itemSelect");
+        sel.innerHTML = "";
+        items.forEach(function (it) {
+          const opt = document.createElement("option");
+          opt.value = it.id;
+          opt.textContent = it.name + " (" + money(it.basePrice) + ")";
+          sel.appendChild(opt);
+        });
+        sel.disabled = items.length === 0;
+        document.getElementById("genBtn").disabled = items.length === 0;
+        if (items.length === 0) showErr("No items returned.");
+      } catch (e) {
+        showErr(e.message);
+      }
+    };
+
+    document.getElementById("genBtn").onclick = async function () {
+      showErr("");
+      const itemId = document.getElementById("itemSelect").value;
+      const state = document.getElementById("stateSelect").value;
+      const item = items.find(function (i) { return i.id === itemId; });
+
+      try {
+        const res = await fetch(API + "/tax/quote", {
+          method: "POST",
+          headers: {
+            "X-API-Key": API_KEY,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ state: state, itemId: itemId })
+        });
+        if (!res.ok) throw new Error("POST /tax/quote failed (" + res.status + ")");
+        const quote = await res.json();
+
+        document.getElementById("tagName").textContent = item ? item.name : "Item";
+        document.getElementById("tagTotal").textContent = money(quote.total);
+        document.getElementById("tagBits").innerHTML =
+          "Base: " + money(quote.price) + "<br>" +
+          "State: " + state + "<br>" +
+          "Tax rate: " + (quote.taxRate * 100).toFixed(2) + "%<br>" +
+          "Tax: " + money(quote.taxAmount);
+        document.getElementById("tag").classList.add("show");
+      } catch (e) {
+        showErr(e.message);
+        document.getElementById("tag").classList.remove("show");
+      }
+    };
+  </script>
+</body>
+</html>
