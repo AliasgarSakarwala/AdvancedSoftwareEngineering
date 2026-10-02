@@ -171,11 +171,19 @@ public final class TaxApiService {
      * @return all items
      * @throws IOException if an I/O error occurs
      */
-    public List<Item> getItems() throws IOException {
-        return readList(
+    public List<Item> getItems(
+        final String category,
+        final String q
+    )  throws IOException{
+
+        List<Item> items = readList(
             "items.json",
             new TypeReference<>() { }
         );
+        return items.stream()
+        .filter(item -> category == null ? true : item.getCategory().equalsIgnoreCase(category))
+        .filter(item -> q == null? true : item.getName().toLowerCase().contains(q.toLowerCase()))
+        .toList();
     }
 
     /**
@@ -199,6 +207,35 @@ public final class TaxApiService {
             )
             .findFirst()
             .orElse(null);
+    }
+
+    /**
+     * Updates the base price of an item by ID.
+     *
+     * @param id the item ID
+     * @param NewPrice is the new price of the item
+     * @return the updated item or null
+     * @throws IOException if an I/O error occurs
+     */
+    public Item updateItemPrice( final String id, double NewPrice) throws IOException {
+        List<Item> items = readList(
+            "items.json",
+            new TypeReference<>() { }
+        );
+
+        Item item = items.stream()
+            .filter(i ->
+                i.getId().equals(id)
+            )
+            .findFirst()
+            .orElse(null);
+
+        if (item == null) {
+            return null;
+        }
+        item.setBasePrice(NewPrice);
+        writeList("items.json", items);
+        return item;
     }
 
     /**
@@ -226,6 +263,9 @@ public final class TaxApiService {
 
         return removed;
     }
+
+    
+   
 
     /**
      * Calculates tax for a request.

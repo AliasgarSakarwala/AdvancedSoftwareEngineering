@@ -18,6 +18,8 @@ import com.taxapi.model.SupportedResponse;
 import com.taxapi.model.TaxQuoteRequest;
 import com.taxapi.model.TaxQuoteResponse;
 import com.taxapi.service.TaxApiService;
+import org.springframework.web.bind.annotation.PatchMapping;  
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
@@ -98,20 +100,24 @@ public final class ApiController {
     /**
      * Function to get all items.
      * @param apiKey is the API key
+     * @param category is the category of the items to get
+     * @param q is the query to search for
      * @return the list of all items
      * @throws IOException if API key is invalid
      */
     @GetMapping("/items")
     public ResponseEntity<List<Item>> getItems(
         @RequestHeader("X-API-Key")
-        final String apiKey
+        final String apiKey,
+        @RequestParam(required = false) final String category,
+        @RequestParam(required = false) final String q
     ) throws IOException {
         if (!taxApiService.validateApiKey(apiKey)) {
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .build();
         }
-        List<Item> items = taxApiService.getItems();
+        List<Item> items = taxApiService.getItems(category, q);
         return ResponseEntity.ok(items);
     }
 
@@ -167,6 +173,34 @@ public final class ApiController {
         }
         return ResponseEntity.noContent().build();
     }
+
+   /**
+   * Updates the base price of an existing item.
+   * @param apiKey is the API key
+   * @param id is the ID of the item to update
+   * @param item is the item to update
+   * @return the updated item
+   * @throws IOException if API key is invalid
+   */
+  @PatchMapping("/items/{id}")
+  public ResponseEntity<Item> updateItemPrice(
+    @RequestHeader("X-API-Key")
+    final String apiKey,
+    @PathVariable final String id,
+    @RequestBody final Item item
+  ) throws IOException {
+    if (!taxApiService.validateApiKey(apiKey)) {
+      return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .build();
+    }
+    Item updatedItem = taxApiService.updateItemPrice(id, item.getBasePrice());
+    if (updatedItem == null) {
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(updatedItem);
+  }
+  
 
     /**
      * Calculates tax for a quote request.

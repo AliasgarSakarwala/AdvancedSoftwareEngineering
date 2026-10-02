@@ -19,6 +19,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import java.util.List;
 
 @SpringBootTest
 @Import(TestConfig.class)
@@ -123,5 +125,65 @@ class ApiControllerTest {
                 .header("X-API-Key", VALID_KEY))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.states").isArray());
+    }
+    @Test
+    void PATCH_ItemsPrice() throws Exception {
+        String body = "{\"basePrice\":123.45}";
+        mockMvc.perform(patch("/v1/items/item-1")
+                .header("X-API-Key", VALID_KEY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.basePrice").value(123.45));
+    }
+    @Test
+    void PATCH_ITemsPriceWithBadKey() throws Exception {
+        String body = "{\"basePrice\":123.45}";
+        mockMvc.perform(patch("/v1/items/item-1")
+                .header("X-API-Key", BAD_KEY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isUnauthorized());
+    }
+    @Test
+    void PATCH_ITemsPriceWithInvalidID() throws Exception {
+        String body = "{\"basePrice\":123.45}";
+        mockMvc.perform(patch("/v1/items/invalid-id")
+                .header("X-API-Key", VALID_KEY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isNotFound());
+    }
+    @Test
+    void GET_ItemsWithCategory() throws Exception {
+        mockMvc.perform(get("/v1/items")
+                .header("X-API-Key", VALID_KEY)
+                .queryParam("category", "electronics"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name").value("Laptop"));
+    }
+    @Test
+    void GET_ItemsWithQuery() throws Exception {
+        mockMvc.perform(get("/v1/items")
+                .header("X-API-Key", VALID_KEY)
+                .queryParam("q", "laptop"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name").value("Laptop"));
+    }
+    @Test
+    void GET_ItemsWithCategoryAndQuery() throws Exception {
+        mockMvc.perform(get("/v1/items")
+                .header("X-API-Key", VALID_KEY)
+                .queryParam("category", "electronics")
+                .queryParam("q", "laptop"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name").value("Laptop"));
+    }
+    @Test
+    void GET_ItemsWithNulls() throws Exception {
+        mockMvc.perform(get("/v1/items")
+                .header("X-API-Key", VALID_KEY))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name").value("Laptop"));
     }
 }
